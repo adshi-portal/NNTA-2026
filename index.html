@@ -1,0 +1,1645 @@
+<title id="pageTitle">НМТЗ-2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --bg:#EEF0F4;
+    --surface:#FFFFFF;
+    --surface-2:#F3F4F9;
+    --ink:#181B29;
+    --ink-soft:#474C63;
+    --ink-faint:#7A7F97;
+    --line:#D7D9E6;
+    --line-strong:#B7BBD4;
+    --accent:#4B3FD1;
+    --accent-ink:#332793;
+    --accent-soft:#E4E1FA;
+    --teal:#0E7C86;
+    --teal-ink:#0A5D65;
+    --teal-soft:#DCEFF1;
+    --good:#227A54;
+    --good-soft:#DFF1E7;
+    --warn:#A9660F;
+    --warn-soft:#F5E7CE;
+    --danger:#B23A3A;
+    --danger-soft:#F5DEDE;
+    --shadow: 0 1px 2px rgba(20,20,40,.06), 0 10px 26px -14px rgba(20,20,40,.22);
+    --radius:10px;
+    --font-display:'Fraunces', ui-serif, Georgia, serif;
+    --font-body:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono:'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0E1020; --surface:#171A33; --surface-2:#12142A;
+      --ink:#E7E7F2; --ink-soft:#B7B9D6; --ink-faint:#8388AC;
+      --line:#2B2F52; --line-strong:#3C4270;
+      --accent:#8B84F0; --accent-ink:#C9C5FA; --accent-soft:#231F55;
+      --teal:#4FC2CC; --teal-ink:#B9EDF1; --teal-soft:#0F3238;
+      --good:#7FD1A6; --good-soft:#123524;
+      --warn:#E7B45E; --warn-soft:#3A2C12;
+      --danger:#E28787; --danger-soft:#3A1E1E;
+      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 14px 30px -16px rgba(0,0,0,.65);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1020; --surface:#171A33; --surface-2:#12142A;
+    --ink:#E7E7F2; --ink-soft:#B7B9D6; --ink-faint:#8388AC;
+    --line:#2B2F52; --line-strong:#3C4270;
+    --accent:#8B84F0; --accent-ink:#C9C5FA; --accent-soft:#231F55;
+    --teal:#4FC2CC; --teal-ink:#B9EDF1; --teal-soft:#0F3238;
+    --good:#7FD1A6; --good-soft:#123524;
+    --warn:#E7B45E; --warn-soft:#3A2C12;
+    --danger:#E28787; --danger-soft:#3A1E1E;
+    --shadow: 0 1px 2px rgba(0,0,0,.35), 0 14px 30px -16px rgba(0,0,0,.65);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--font-body); font-size:16px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;}
+  h1,h2,h3,h4{font-family:var(--font-display); font-weight:600; margin:0 0 .4em; text-wrap:balance; color:var(--ink);}
+  p{margin:0 0 1em;}
+  a{color:var(--accent);}
+  ::selection{background:var(--accent-soft);}
+  .mono{font-family:var(--font-mono);}
+  .container{max-width:1080px; margin:0 auto; padding:0 24px;}
+  button{font-family:inherit;}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  [hidden]{display:none!important;}
+
+  /* faint node-field texture, evoking a neural-network graph */
+  .grid-ground{
+    background-image:radial-gradient(var(--line-strong) 1.3px, transparent 1.3px);
+    background-size:26px 26px;
+    background-position:center top;
+    opacity:.55;
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    mask-image:linear-gradient(to bottom, black, transparent 640px);
+  }
+
+  /* ============ HEADER / NAV ============ */
+  header.site{
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--surface) 90%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .head-row{
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    padding:14px 24px; max-width:1080px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:12px; margin-right:auto; text-decoration:none;}
+  .brand-mark{
+    width:40px; height:40px; border-radius:8px;
+    background:linear-gradient(155deg, var(--accent), var(--accent-ink));
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-weight:600; font-size:11px; letter-spacing:.01em;
+    flex:none; box-shadow:var(--shadow);
+  }
+  nav.tabs{display:flex; gap:2px; flex-wrap:wrap;}
+  nav.tabs button{
+    border:1px solid transparent; background:transparent; color:var(--ink-soft);
+    padding:8px 12px; border-radius:8px; font-size:14px; cursor:pointer;
+    font-weight:500; transition:background .15s, color .15s;
+  }
+  nav.tabs button:hover{background:var(--surface-2); color:var(--ink);}
+  nav.tabs button[aria-current="page"]{background:var(--accent-soft); color:var(--accent-ink); font-weight:600;}
+  .head-controls{display:flex; align-items:center; gap:8px; flex:none;}
+  .theme-toggle{
+    border:1px solid var(--line); background:var(--surface); color:var(--ink-soft);
+    width:36px; height:36px; border-radius:8px; cursor:pointer; flex:none;
+    display:flex; align-items:center; justify-content:center; font-size:15px;
+  }
+  .lang-toggle{ width:auto; padding:0 12px; font-family:var(--font-mono); font-weight:700; font-size:12.5px; letter-spacing:.03em; }
+
+  /* ============ GENERIC LAYOUT ============ */
+  main{position:relative; z-index:1;}
+  section.view{padding:52px 0 88px;}
+  .eyebrow{
+    font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.08em;
+    font-size:12px; color:var(--accent-ink); font-weight:600; margin-bottom:10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow .dash{width:20px; height:1px; background:var(--accent);}
+  .lede{font-size:18px; color:var(--ink-soft); max-width:64ch;}
+  .col-2{display:grid; grid-template-columns:1.3fr 1fr; gap:40px;}
+  .col-3{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  @media (max-width:860px){ .col-2{grid-template-columns:1fr;} .col-3{grid-template-columns:1fr;} }
+
+  .card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:22px 24px; box-shadow:var(--shadow); }
+  .panel{ background:var(--surface-2); border:1px dashed var(--line-strong); border-radius:var(--radius); padding:18px 20px; }
+  .divider{height:1px; background:var(--line); border:0; margin:40px 0;}
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    font-family:var(--font-body); font-weight:600; font-size:14.5px;
+    padding:11px 20px; border-radius:8px; border:1px solid transparent; cursor:pointer;
+    text-decoration:none; transition:transform .1s ease, background .15s, border-color .15s;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--accent); color:#fff;}
+  .btn-primary:hover{background:var(--accent-ink);}
+  .btn-teal{background:var(--teal); color:#fff;}
+  .btn-teal:hover{filter:brightness(1.08);}
+  .btn-ghost{background:transparent; border-color:var(--line-strong); color:var(--ink);}
+  .btn-ghost:hover{background:var(--surface-2);}
+  .btn-sm{padding:7px 12px; font-size:13px; border-radius:7px;}
+  .btn[disabled]{opacity:.5; cursor:not-allowed;}
+  .btn[disabled]:hover{background:var(--accent);}
+
+  .badge{
+    display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono);
+    font-size:11.5px; letter-spacing:.03em; padding:4px 9px; border-radius:99px;
+    border:1px solid var(--line-strong); color:var(--ink-soft); text-transform:uppercase;
+  }
+
+  /* ============ HOME / HERO ============ */
+  .hero{padding:44px 0 20px;}
+  .letterhead{
+    font-family:var(--font-mono); font-size:11.5px; color:var(--ink-faint);
+    display:flex; flex-wrap:wrap; gap:6px 14px; line-height:1.5; margin-bottom:30px; max-width:920px;
+  }
+  h1.title{ font-size:clamp(30px,5.6vw,60px); line-height:1.1; width:100%; color:var(--accent-ink); margin:6px 0 26px; }
+  .meta-row{display:flex; flex-wrap:wrap; gap:10px 26px; margin:22px 0 30px; font-size:14.5px;}
+  .meta-item{display:flex; align-items:center; gap:8px; color:var(--ink-soft);}
+  .meta-item .k{font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint);}
+  .cta-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:10px;}
+
+  .path-fork{margin:36px 0;}
+  .path-card h3{font-size:19px;}
+  .path-card p{font-size:14.5px; color:var(--ink-soft);}
+
+  .stat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; margin:44px 0;}
+  .stat{background:var(--surface); padding:18px 20px;}
+  .stat .n{font-family:var(--font-display); font-size:26px; font-weight:600; color:var(--accent-ink); font-variant-numeric:tabular-nums;}
+  .stat .l{font-size:12.5px; color:var(--ink-faint); margin-top:2px;}
+  @media (max-width:760px){ .stat-grid{grid-template-columns:repeat(2,1fr);} }
+
+  .timeline{list-style:none; margin:0; padding:0; border-left:2px solid var(--line); margin-left:6px;}
+  .timeline li{position:relative; padding:2px 0 26px 26px;}
+  .timeline li::before{ content:''; position:absolute; left:-7px; top:4px; width:12px; height:12px; border-radius:50%; background:var(--surface); border:2px solid var(--accent); }
+  .timeline li.done::before{background:var(--good); border-color:var(--good);}
+  .timeline li.now::before{background:var(--teal); border-color:var(--teal); box-shadow:0 0 0 4px var(--teal-soft);}
+  .timeline .tl-date{font-family:var(--font-mono); font-size:12.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em;}
+  .timeline .tl-title{font-weight:600; margin:2px 0 2px;}
+  .timeline .tl-desc{font-size:14px; color:var(--ink-soft);}
+  .countdown{font-family:var(--font-mono); font-size:12.5px; color:var(--teal-ink); font-weight:600;}
+
+  /* ============ ABOUT ============ */
+  .org-list{ columns:2 260px; column-gap:28px; font-size:13.5px; color:var(--ink-soft); list-style:none; margin:0; padding:0; }
+  .org-list li{ break-inside:avoid; padding:5px 0 5px 16px; position:relative; border-bottom:1px dotted var(--line); }
+  .org-list li::before{content:'—'; position:absolute; left:0; color:var(--ink-faint);}
+
+  .goal-list{list-style:none; margin:0; padding:0; display:grid; gap:14px;}
+  .goal-list li{display:flex; gap:14px; align-items:flex-start;}
+  .goal-num{
+    font-family:var(--font-mono); font-size:12px; color:var(--accent-ink); background:var(--accent-soft);
+    width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    flex:none; font-weight:600; margin-top:1px;
+  }
+
+  .committee-grid{ columns:2 300px; column-gap:26px; font-size:13.5px; }
+  .committee-grid .person{break-inside:avoid; padding:9px 0; border-bottom:1px solid var(--line);}
+  .committee-grid .p-role{font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--teal-ink); margin-bottom:2px;}
+  .committee-grid .p-name{font-weight:600; color:var(--ink);}
+  .committee-grid .p-aff{color:var(--ink-faint); font-size:12.5px;}
+
+  .section-card{border-top:3px solid var(--accent);}
+  .section-card .sc-head{display:flex; align-items:baseline; gap:10px; margin-bottom:10px;}
+  .section-card .sc-num{font-family:var(--font-mono); color:var(--accent-ink); font-weight:700; font-size:12.5px;}
+  .section-card h3{font-size:17px; margin:0;}
+  .section-card p{margin:0; color:var(--ink-soft); font-size:14px;}
+  .topics-note{font-size:13.5px; color:var(--ink-faint); margin-top:18px;}
+
+  .lang-row{display:flex; gap:10px; margin-top:6px;}
+
+  /* ============ FIELDSETS / CHECKLIST ============ */
+  fieldset{border:none; padding:0; margin:0;}
+  legend{font-family:var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); padding:0 0 10px;}
+  .checklist{display:grid; gap:10px;}
+  .checklist .cl-group{border:1px solid var(--line); border-radius:8px; padding:12px 14px;}
+  .checklist .cl-group h4{font-size:12.5px; text-transform:uppercase; letter-spacing:.04em; font-family:var(--font-mono); color:var(--ink-faint); margin:0 0 8px; font-weight:600;}
+  .cl-item{display:flex; align-items:flex-start; gap:9px; padding:5px 0; font-size:14px;}
+  .cl-item input{margin-top:3px; flex:none; width:16px; height:16px; accent-color:var(--accent);}
+  .cl-progress{height:6px; border-radius:99px; background:var(--line); overflow:hidden; margin:4px 0 2px;}
+  .cl-progress > i{display:block; height:100%; background:var(--accent); width:0%; transition:width .2s;}
+  .hint{font-size:12px; color:var(--ink-faint); font-weight:400;}
+
+  .info-note{
+    display:flex; gap:12px; background:var(--accent-soft); border:1px solid color-mix(in srgb, var(--accent) 40%, var(--line));
+    border-radius:var(--radius); padding:14px 16px; font-size:13.5px; color:var(--ink);
+  }
+  .info-note.warn{background:var(--warn-soft); border-color:color-mix(in srgb, var(--warn) 45%, var(--line));}
+  .info-note .ico{flex:none; font-family:var(--font-mono); font-weight:700; color:var(--accent-ink);}
+  .info-note.warn .ico{color:var(--warn);}
+
+  /* ============ REGISTRATION FORM ============ */
+  .reg-card{border-left:4px solid var(--accent);}
+  .reg-block{border:1px solid var(--line); border-radius:8px; padding:16px 18px; margin-bottom:16px;}
+  .reg-block legend{padding:0 0 12px;}
+  .field-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px 16px;}
+  @media (max-width:640px){ .field-grid{grid-template-columns:1fr;} }
+  .field{display:flex; flex-direction:column; gap:5px; margin-bottom:14px;}
+  .field:last-child{margin-bottom:0;}
+  .field label{font-size:13px; font-weight:600; color:var(--ink-soft);}
+  .field.required label::after{content:' *'; color:var(--danger);}
+  .field .hint{margin-top:1px;}
+  .field input[type="text"], .field input[type="email"], .field input[type="tel"], .field select, .field textarea{
+    font-family:var(--font-body); font-size:15px; padding:9px 11px; border-radius:7px;
+    border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); width:100%;
+  }
+  .field textarea{resize:vertical; min-height:64px;}
+  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--accent);}
+  .field input:invalid:not(:placeholder-shown){border-color:var(--danger);}
+  .radio-row{display:flex; gap:16px; flex-wrap:wrap;}
+  .radio-row label{display:flex; align-items:center; gap:7px; font-size:14.5px; cursor:pointer; font-weight:400;}
+  .radio-row input{accent-color:var(--accent); width:16px; height:16px;}
+  .consent-row{display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--ink-soft);}
+  .consent-row input{margin-top:3px; flex:none; width:17px; height:17px; accent-color:var(--accent);}
+  .form-actions{display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding-top:6px;}
+  .msg{font-size:13.5px; padding:10px 13px; border-radius:8px; display:none;}
+  .msg.show{display:block;}
+  .msg.ok{background:var(--good-soft); color:var(--good);}
+  .msg.err{background:var(--danger-soft); color:var(--danger);}
+  .config-notice{margin-bottom:18px;}
+  .confirm-card{border-left:4px solid var(--good);}
+  .confirm-card h3{color:var(--good); font-size:19px;}
+
+  /* ============ GOOGLE FORM EMBEDS (manuscript / revision) ============ */
+  .gform-frame{border:0; border-radius:8px; display:block; width:100%;}
+  .empty-state{
+    text-align:center; padding:36px 20px; color:var(--ink-faint);
+    border:1px dashed var(--line-strong); border-radius:var(--radius);
+  }
+  .empty-state .es-msg{margin-bottom:6px; color:var(--ink-soft);}
+  .empty-state .es-note{font-size:12px;}
+
+  /* ============ CONTACTS ============ */
+  .contact-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:18px;}
+  @media (max-width:760px){ .contact-grid{grid-template-columns:1fr;} }
+  .contact-card .role{font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--teal-ink); margin-bottom:6px;}
+  .contact-card .name{font-weight:700; font-size:15.5px;}
+  .contact-card .aff{font-size:13px; color:var(--ink-faint); margin:2px 0 10px;}
+  .contact-card .cline{font-size:13.5px; display:flex; gap:8px; align-items:center; margin-top:4px;}
+  .venue-block{margin-top:26px;}
+
+  footer.site{border-top:1px solid var(--line); margin-top:20px; padding:34px 0; font-size:13px; color:var(--ink-faint);}
+  footer.site .container{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+
+  @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto!important; transition:none!important;} }
+</style>
+
+<div class="grid-ground" aria-hidden="true"></div>
+
+<header class="site">
+  <div class="head-row">
+    <div class="brand">
+      <span class="brand-mark">НМ</span>
+    </div>
+    <nav class="tabs" id="mainNav" aria-label="Розділи сайту">
+      <button type="button" data-nav="home"></button>
+      <button type="button" data-nav="about"></button>
+      <button type="button" data-nav="register"></button>
+      <button type="button" data-nav="submit"></button>
+      <button type="button" data-nav="status"></button>
+      <button type="button" data-nav="contacts"></button>
+    </nav>
+    <div class="head-controls">
+      <button class="theme-toggle lang-toggle" id="langToggle" type="button"></button>
+      <button class="theme-toggle" id="themeToggle" type="button">◐</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ================= HOME ================= -->
+<section class="view" id="view-home">
+  <div class="container">
+    <div class="hero">
+      <div class="letterhead" id="letterheadShort"></div>
+      <div class="eyebrow"><span class="dash"></span><span id="homeEyebrow"></span></div>
+      <h1 class="title" id="homeTitle"></h1>
+      <p class="lede" id="homeLede"></p>
+
+      <div class="meta-row">
+        <div class="meta-item"><span class="k" id="metaDatesK"></span><span id="metaDatesV"></span></div>
+        <div class="meta-item"><span class="k" id="metaVenueK"></span><span id="metaVenueV"></span></div>
+        <div class="meta-item"><span class="k" id="metaFormatK"></span><span id="metaFormatV"></span></div>
+        <div class="meta-item"><span class="k" id="metaLangK"></span><span id="metaLangV"></span></div>
+        <div class="meta-item"><span class="k" id="metaFeeK"></span><span id="metaFeeV"></span></div>
+      </div>
+
+      <div class="cta-row">
+        <button class="btn btn-primary" data-nav="register" id="ctaRegister"></button>
+        <button class="btn btn-teal" data-nav="submit" id="ctaSubmit"></button>
+        <button class="btn btn-ghost" data-nav="about" id="ctaAbout"></button>
+      </div>
+    </div>
+
+    <!-- two separate scenarios: attending vs. submitting a paper -->
+    <div class="col-2 path-fork">
+      <div class="card path-card">
+        <div class="eyebrow"><span class="dash"></span><span id="pathAEyebrow"></span></div>
+        <h3 id="pathATitle"></h3>
+        <p id="pathAText"></p>
+        <button class="btn btn-primary" data-nav="register" id="pathABtn"></button>
+      </div>
+      <div class="card path-card">
+        <div class="eyebrow"><span class="dash"></span><span id="pathBEyebrow"></span></div>
+        <h3 id="pathBTitle"></h3>
+        <p id="pathBText"></p>
+        <button class="btn btn-teal" data-nav="submit" id="pathBBtn"></button>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat"><div class="n">7</div><div class="l" id="statSectionsL"></div></div>
+      <div class="stat"><div class="n">15</div><div class="l" id="statPartnersL"></div></div>
+      <div class="stat"><div class="n" id="statDeadlineDays">—</div><div class="l" id="statDeadlineL"></div></div>
+      <div class="stat"><div class="n" id="statDigestN"></div><div class="l" id="statDigestL"></div></div>
+    </div>
+
+    <div class="col-2">
+      <div>
+        <div class="eyebrow"><span class="dash"></span><span id="keyDatesEyebrow"></span></div>
+        <ul class="timeline" id="timelineList"></ul>
+      </div>
+      <div>
+        <div class="eyebrow"><span class="dash"></span><span id="howEyebrow"></span></div>
+        <div class="card" style="margin-bottom:14px;">
+          <p style="margin-bottom:8px;" id="step1"></p>
+          <p style="margin-bottom:8px;" id="step2"></p>
+          <p style="margin-bottom:8px;" id="step3"></p>
+          <p style="margin-bottom:8px;" id="step4"></p>
+          <p style="margin-bottom:0;" id="step5"></p>
+        </div>
+        <div class="hint" style="margin-bottom:14px;" id="stepsNote"></div>
+        <div class="info-note"><span class="ico">i</span><span id="homeInfoNote"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="view" id="view-about" hidden>
+  <div class="container">
+    <div class="eyebrow"><span class="dash"></span><span id="aboutEyebrow"></span></div>
+    <h2 style="font-size:29px; max-width:28ch;" id="aboutH2"></h2>
+
+    <h3 style="margin-top:34px; font-size:18px;" id="goalsH3"></h3>
+    <ul class="goal-list">
+      <li><span class="goal-num">1</span><span id="goal1"></span></li>
+      <li><span class="goal-num">2</span><span id="goal2"></span></li>
+      <li><span class="goal-num">3</span><span id="goal3"></span></li>
+    </ul>
+
+    <hr class="divider">
+
+    <h3 style="font-size:18px;" id="orgsH3"></h3>
+    <p class="lede" style="font-size:15px; margin-bottom:16px;" id="orgsLede"></p>
+    <ul class="org-list" id="orgListFull"></ul>
+
+    <hr class="divider">
+
+    <h3 style="font-size:18px;" id="committeeH3"></h3>
+    <div class="committee-grid" id="committeeGrid"></div>
+
+    <hr class="divider">
+
+    <h3 style="font-size:18px;" id="langH3"></h3>
+    <div class="lang-row">
+      <span class="badge" id="badgeUk"></span>
+      <span class="badge">English</span>
+    </div>
+
+    <hr class="divider">
+
+    <h3 style="font-size:18px; margin-bottom:18px;" id="topicsH3"></h3>
+    <div class="col-3" id="sectionsGrid" style="grid-template-columns:repeat(2,1fr);"></div>
+    <p class="topics-note" id="topicsNote"></p>
+  </div>
+</section>
+
+<!-- ================= REGISTRATION ================= -->
+<section class="view" id="view-register" hidden>
+  <div class="container">
+    <div class="eyebrow"><span class="dash"></span><span id="registerEyebrow"></span></div>
+    <h2 style="font-size:27px;" id="registerH2"></h2>
+    <p class="lede" style="font-size:15px; margin-bottom:10px;" id="registerLede"></p>
+    <div class="info-note" style="max-width:760px; margin-bottom:26px;"><span class="ico">i</span><span id="registerSeparateNote"></span></div>
+
+    <div class="col-2">
+      <div>
+        <div class="card reg-card">
+          <div id="regConfigNotice" class="info-note warn config-notice" hidden><span class="ico">!</span><span id="regConfigNoticeText"></span></div>
+
+          <form id="registrationForm" target="regHiddenFrame">
+            <fieldset class="reg-block">
+              <legend id="regBlock1Legend"></legend>
+              <div class="field-grid">
+                <div class="field required"><label for="reg_fullName" id="regFullNameLabel"></label>
+                  <input type="text" id="reg_fullName" autocomplete="name" required></div>
+                <div class="field required"><label for="reg_email" id="regEmailLabel"></label>
+                  <input type="email" id="reg_email" autocomplete="email" required></div>
+                <div class="field required"><label for="reg_phone" id="regPhoneLabel"></label>
+                  <input type="tel" id="reg_phone" autocomplete="tel" pattern="[0-9+\(\)\-\s]{6,20}" required></div>
+              </div>
+            </fieldset>
+
+            <fieldset class="reg-block">
+              <legend id="regBlock2Legend"></legend>
+              <div class="field-grid">
+                <div class="field required"><label for="reg_country" id="regCountryLabel"></label>
+                  <input type="text" id="reg_country" required></div>
+                <div class="field required"><label for="reg_institution" id="regInstitutionLabel"></label>
+                  <input type="text" id="reg_institution" required></div>
+                <div class="field required"><label for="reg_degreePosition" id="regDegreePositionLabel"></label>
+                  <input type="text" id="reg_degreePosition" required></div>
+              </div>
+            </fieldset>
+
+            <fieldset class="reg-block">
+              <legend id="regBlock3Legend"></legend>
+              <div class="field required" style="margin-bottom:16px;">
+                <label id="regParticipationFormatLabel"></label>
+                <div class="radio-row" id="regParticipationFormatRadios"></div>
+              </div>
+              <div class="field required" style="margin-bottom:16px;">
+                <label id="regManuscriptLabel"></label>
+                <div class="radio-row" id="regManuscriptRadios"></div>
+              </div>
+              <div class="field required" style="margin-bottom:16px;">
+                <label for="reg_track" id="regTrackLabel"></label>
+                <select id="reg_track" required></select>
+              </div>
+              <div class="field required">
+                <label for="reg_invitation" id="regInviteLabel"></label>
+                <select id="reg_invitation" required></select>
+              </div>
+            </fieldset>
+
+            <fieldset class="reg-block">
+              <legend id="regBlock4Legend"></legend>
+              <div class="field"><label for="reg_comments" id="regCommentsLabel"></label>
+                <textarea id="reg_comments"></textarea></div>
+            </fieldset>
+
+            <fieldset class="reg-block">
+              <legend id="regBlock5Legend"></legend>
+              <label class="consent-row"><input type="checkbox" id="reg_consent" required><span id="regConsentLabel"></span></label>
+            </fieldset>
+
+            <div class="msg" id="regMsg" role="alert"></div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="regSubmitBtn"></button>
+            </div>
+          </form>
+
+          <div class="card confirm-card" id="regThankYou" hidden style="margin-top:18px;">
+            <h3 id="regThankYouTitle"></h3>
+            <p id="regThankYouText" style="margin-bottom:14px;"></p>
+            <button class="btn btn-teal" data-nav="submit" id="regThankYouCta"></button>
+          </div>
+        </div>
+
+        <iframe name="regHiddenFrame" id="regHiddenFrame" title="registration submit target" style="display:none" aria-hidden="true"></iframe>
+      </div>
+
+      <div>
+        <div class="panel" style="margin-bottom:16px;">
+          <strong style="display:block; margin-bottom:8px;" id="registerPanelTitle"></strong>
+          <ol style="margin:0; padding-left:18px; font-size:13.5px; color:var(--ink-soft); display:grid; gap:6px;" id="sectionMiniList"></ol>
+        </div>
+        <div class="panel" style="margin-bottom:16px;">
+          <strong style="display:block; margin-bottom:8px;" id="regWhoTitle"></strong>
+          <ul style="margin:0; padding-left:18px; font-size:13.5px; color:var(--ink-soft); display:grid; gap:6px;" id="regWhoList"></ul>
+        </div>
+        <div class="info-note" id="regDeadlineNoteBox"><span class="ico">i</span><span id="regDeadlineNoteText"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SUBMIT MANUSCRIPT ================= -->
+<section class="view" id="view-submit" hidden>
+  <div class="container">
+    <div class="eyebrow"><span class="dash"></span><span id="submitEyebrow"></span></div>
+    <h2 style="font-size:27px;" id="submitH2"></h2>
+    <p class="lede" style="font-size:15px; margin-bottom:10px;" id="submitLede"></p>
+    <div class="info-note" style="max-width:760px; margin-bottom:14px;"><span class="ico">i</span><span id="submitSeparateNote"></span></div>
+    <div class="info-note" style="max-width:760px; margin-bottom:26px;"><span class="ico" id="deadlineIco">i</span><span id="deadlineNote"></span></div>
+
+    <div class="col-2">
+      <div>
+        <div class="card" style="margin-bottom:26px;">
+          <fieldset>
+            <legend id="checklistLegend"></legend>
+            <div class="cl-progress"><i id="clBar"></i></div>
+            <div class="hint" id="clCount" style="margin-bottom:8px;"></div>
+            <div class="checklist" id="checklistWrap"></div>
+          </fieldset>
+        </div>
+
+        <div class="eyebrow"><span class="dash"></span><span id="submitFormEyebrow"></span></div>
+        <div class="card" id="gformManuscriptCard" style="margin-bottom:26px;">
+          <div id="gform-manuscript"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel" style="margin-bottom:16px;">
+          <strong style="display:block; margin-bottom:8px;" id="reqPanelTitle"></strong>
+          <ul style="margin:0; padding-left:18px; font-size:13.5px; color:var(--ink-soft); display:grid; gap:6px;" id="reqList"></ul>
+        </div>
+        <div class="info-note warn"><span class="ico">!</span><span id="submitWarnNote"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= REVIEW / REVISIONS ================= -->
+<section class="view" id="view-status" hidden>
+  <div class="container">
+    <div class="eyebrow"><span class="dash"></span><span id="statusEyebrow"></span></div>
+    <h2 style="font-size:27px; margin-bottom:4px;" id="statusH2"></h2>
+    <p class="lede" style="font-size:15px; margin-bottom:26px;" id="statusLede"></p>
+
+    <ol class="goal-list" style="margin-bottom:30px;">
+      <li><span class="goal-num">1</span><span id="statusGoal1"></span></li>
+      <li><span class="goal-num">2</span><span id="statusGoal2"></span></li>
+      <li><span class="goal-num">3</span><span id="statusGoal3"></span></li>
+      <li><span class="goal-num">4</span><span id="statusGoal4"></span></li>
+    </ol>
+
+    <div class="info-note" style="margin-bottom:26px;"><span class="ico">i</span><span id="statusInfoNote1"></span></div>
+
+    <div class="eyebrow"><span class="dash"></span><span id="statusFormEyebrow"></span></div>
+    <div class="card" id="gformRevisionCard" style="margin-bottom:20px;">
+      <div id="gform-revision"></div>
+    </div>
+
+    <div class="info-note"><span class="ico">i</span><span id="statusInfoNote2"></span></div>
+  </div>
+</section>
+
+<!-- ================= CONTACTS ================= -->
+<section class="view" id="view-contacts" hidden>
+  <div class="container">
+    <div class="eyebrow"><span class="dash"></span><span id="contactsEyebrow"></span></div>
+    <h2 style="font-size:27px;" id="contactsH2"></h2>
+    <div class="contact-grid" id="contactGrid" style="margin-top:22px;"></div>
+
+    <div class="venue-block">
+      <div class="eyebrow"><span class="dash"></span><span id="venueEyebrow"></span></div>
+      <div class="card">
+        <p style="margin-bottom:4px;"><strong id="venueName"></strong></p>
+        <p style="margin-bottom:4px; color:var(--ink-soft);" id="venueDept"></p>
+        <p style="margin-bottom:0; color:var(--ink-soft);" id="venueLine"></p>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:26px;" id="contactsPanel"></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site">
+  <div class="container">
+    <span id="footerLine1"></span>
+    <span id="footerLine2"></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var EMAIL = 'kovalevskii61@gmail.com';
+  var PHONE = '+380504780394';
+
+  /* ================================================================
+     РЕЄСТРАЦІЯ УЧАСНИКІВ — конфігурація Google Форми
+     ------------------------------------------------------------
+     Ця сторінка сама НЕ має сервера, тому реальна доставка даних
+     оргкомітету реалізована через Google Форми + Google Таблиці:
+     власна HTML-форма нижче (стилізована під сайт, з валідацією)
+     подає дані напряму у відповіді вашої Google Форми.
+
+     Структура полів нижче звірена з реальною формою реєстрації
+     оргкомітету (docs.google.com/forms/d/e/1FAIpQLSdwqWPuzFFKsdwnMMCotq0PuHwJR8X5P5rp6mPKCxGLLWf7Qg/viewform) —
+     12 полів, порядок і типи відповідають цій формі.
+
+     ЩО ЩЕ ПОТРІБНО ЗРОБИТИ, ЩОБ РЕЄСТРАЦІЯ ЗАПРАЦЮВАЛА:
+     1) Скопіюйте публічний URL форми (Надіслати → значок посилання)
+        у REGISTRATION_FORM_URL нижче — саме такий вигляд:
+        https://docs.google.com/forms/d/e/XXXXXXXX/viewform
+     2) Для КОЖНОГО поля дізнайтеся його ідентифікатор entry.NNNNNNNNN:
+        відкрийте форму → "⋮" (меню) → "Отримати попередньо заповнене
+        посилання" → заповніть кожне поле розпізнаваним значенням →
+        "Отримати посилання" → скопіюйте з отриманого URL значення
+        entry.NNNNNNNNN, що стоїть перед кожним вашим значенням.
+        Вставте кожен ідентифікатор у відповідне поле об'єкта
+        REGISTRATION_ENTRY_IDS нижче.
+     3) Звірте текст варіантів відповіді (participationFormat,
+        manuscript, invitation) з реальними варіантами у формі —
+        нижче стоять значення, зчитані автоматично, їх варто
+        перевірити символ-у-символ у редакторі форми.
+     4) Google Таблиця з відповідями створюється автоматично
+        (у редакторі форми: вкладка "Відповіді" → значок таблиці).
+
+     Доки REGISTRATION_FORM_URL і всі REGISTRATION_ENTRY_IDS не
+     заповнені, форма на сайті показує чесне попередження, що
+     реєстрація ще не підключена, і не надсилає жодних даних.
+     ================================================================ */
+  var REGISTRATION_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdwqWPuzFFKsdwnMMCotq0PuHwJR8X5P5rp6mPKCxGLLWf7Qg/viewform'; // публічний viewform-URL реальної форми реєстрації (підтверджено)
+  var REGISTRATION_ENTRY_IDS = {
+    fullName:            'entry.681552369',  // 1. Full name / ПІБ*                      (коротка відповідь)
+    email:               'entry.1818891581', // 2. Email address*                        (коротка відповідь, тип "Email")
+    phone:               'entry.830156843',  // 3. Phone number*                         (коротка відповідь)
+    country:             'entry.1975716204', // 4. Country / Країна*                     (коротка відповідь)
+    institution:         'entry.324214961',  // 5. Institution / Установа*               (коротка відповідь)
+    degreePosition:      'entry.1522540583', // 6. Academic degree, position*            (коротка відповідь)
+    participationFormat: 'entry.34467050',   // 7. Participation format*                 (одна відповідь: 3 варіанти)
+    manuscript:          'entry.1989777939', // 8. Will you also submit a manuscript?*   (одна відповідь: Yes / Так, No / Ні)
+    track:               'entry.827067813',  // 9. Section / Секція*                     (спадний список, 7 напрямів)
+    invitation:          'entry.92996121',   // 10. Official invitation letter needed?*  (спадний список: Yes / Так, No / Ні)
+    comments:            'entry.56441724',   // 11. Additional comments                  (абзац, необов'язково)
+    consent:             'entry.1005259744'  // 12. Personal data consent*               (прапорець, обов'язково)
+  };
+  // Усі 12 ID отримано 14.09.2026 з реального "попередньо заповненого посилання" на
+  // https://docs.google.com/forms/d/e/1FAIpQLSdwqWPuzFFKsdwnMMCotq0PuHwJR8X5P5rp6mPKCxGLLWf7Qg/viewform,
+  // надісланого користувачем — це підтверджені, не вигадані значення.
+  var REGISTRATION_DEADLINE = null; // напр.: new Date(2026,10,20) — якщо оргкомітет встановить окремий дедлайн реєстрації; поки не задано, дата ніде не показується
+
+  function isRegistrationConfigured(){
+    if(!REGISTRATION_FORM_URL) return false;
+    return Object.keys(REGISTRATION_ENTRY_IDS).every(function(k){ return !!REGISTRATION_ENTRY_IDS[k]; });
+  }
+  function toFormResponseUrl(url){
+    var base = (url || '').split('?')[0];
+    if(/\/viewform\/?$/.test(base)) return base.replace(/\/viewform\/?$/, '/formResponse');
+    return base;
+  }
+
+  /* ================================================================
+     ПОДАННЯ РУКОПИСУ ТА ДООПРАЦЬОВАНІ ВЕРСІЇ — Google Форми (опційно)
+     ------------------------------------------------------------
+     Ці дві форми вбудовуються на сторінці як звичайна Google Форма
+     (iframe) — жодних entry.NNNN ідентифікаторів шукати не потрібно,
+     достатньо публічного посилання "Надіслати" → значок посилання.
+     Наявний механізм подання поштою (mailto) залишається як
+     альтернативний спосіб і нікуди не зникає.
+     ================================================================ */
+  var SUBMIT_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdFeLDhwkdYOP-1IdWtcSH491lzuuufRo3VIUVeNYKwuDoIXw/viewform';   // Google Форма подання рукопису (підтверджено користувачем)
+  var REVISION_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSea2YwsBlUkbgt0FElYr0F_UAM-BpfawDZgTxifrGiSzHK6tQ/viewform'; // Google Форма для доопрацьованої версії / відповіді на зауваження (підтверджено користувачем)
+  function toEmbedUrl(url){
+    if(!url) return '';
+    return url + (url.indexOf('?') === -1 ? '?embedded=true' : '&embedded=true');
+  }
+
+  /* ---------------- BILINGUAL DATA ---------------- */
+  var ORGS = [
+    { uk:"Міністерство освіти і науки України", en:"Ministry of Education and Science of Ukraine" },
+    { uk:"Національна академія наук України", en:"National Academy of Sciences of Ukraine" },
+    { uk:"Національна академія наук вищої освіти України", en:"National Academy of Sciences of Higher Education of Ukraine" },
+    { uk:"Інститут проблем штучного інтелекту (Україна)", en:"Institute of Artificial Intelligence Problems (Ukraine)" },
+    { uk:"Вінницький національний технічний університет (Україна)", en:"Vinnytsia National Technical University (Ukraine)" },
+    { uk:"Engineering Academy of Serbia (EAS), Belgrade (Serbia)", en:"Engineering Academy of Serbia (EAS), Belgrade (Serbia)" },
+    { uk:"University of Szeged (Hungary)", en:"University of Szeged (Hungary)" },
+    { uk:"Apeiron University in Banja Luka (Bosnia and Herzegovina)", en:"Apeiron University in Banja Luka (Bosnia and Herzegovina)" },
+    { uk:"DAAAM International Vienna (Austria)", en:"DAAAM International Vienna (Austria)" },
+    { uk:"Mechanical Engineering Faculty in Slavonski Brod, J.J. Strossmayer University of Osijek (Croatia)", en:"Mechanical Engineering Faculty in Slavonski Brod, J.J. Strossmayer University of Osijek (Croatia)" },
+    { uk:"University of Montenegro, Faculty of Mechanical Engineering (Montenegro)", en:"University of Montenegro, Faculty of Mechanical Engineering (Montenegro)" },
+    { uk:"University of Zielona Góra (Poland)", en:"University of Zielona Góra (Poland)" },
+    { uk:"Донбаська державна машинобудівна академія (Україна)", en:"Donbas State Engineering Academy (Ukraine)" },
+    { uk:"Тернопільський національний технічний університет імені Івана Пулюя (Україна)", en:"Ivan Puluj Ternopil National Technical University (Ukraine)" },
+    { uk:"Проблемна лабораторія мобільних інтелектуальних технологічних машин (Україна)", en:"Problem Laboratory of Mobile Intelligent Technological Machines (Ukraine)" }
+  ];
+
+  /* role, name, aff carry both languages; email/phone are given only where the invitation states them */
+  var COMMITTEE = [
+    { uk:{role:"Голова оргкомітету", name:"Ковалевський Сергій Вадимович", aff:"д.т.н., проф., професор кафедри технологій та автоматизації машинобудування ВНТУ"},
+      en:{role:"Chair of the Organizing Committee", name:"Sergiy Kovalevskyy", aff:"Dr.Sc. (Eng.), Prof., Department of Mechanical Engineering Technologies and Automation, VNTU"},
+      email:EMAIL, phone:PHONE },
+    { uk:{role:"Співголова оргкомітету", name:"Dašić Predrag", aff:"Hon.D.Sc., Engineering Academy of Serbia (IAS), Belgrade (Serbia)"},
+      en:{role:"Co-Chair of the Organizing Committee", name:"Dašić Predrag", aff:"Hon.D.Sc., Engineering Academy of Serbia (IAS), Belgrade (Serbia)"},
+      email:"", phone:"" },
+    { uk:{role:"Співголова оргкомітету", name:"Gyula Mester", aff:"Dr.Sc., проф., Academic, University of Szeged (Hungary)"},
+      en:{role:"Co-Chair of the Organizing Committee", name:"Gyula Mester", aff:"Dr.Sc., Professor, Academic, University of Szeged (Hungary)"},
+      email:"", phone:"" },
+    { uk:{role:"Член оргкомітету", name:"Козлов Леонід Геннадійович", aff:"д.т.н., проф., професор кафедри технологій та автоматизації машинобудування ВНТУ"},
+      en:{role:"Organizing Committee Member", name:"Leonid Kozlov", aff:"Dr.Sc. (Eng.), Prof., Department of Mechanical Engineering Technologies and Automation, VNTU"},
+      email:"osna2030@gmail.com", phone:"" },
+    { uk:{role:"Член оргкомітету", name:"Репінський Сергій Володимирович", aff:"к.т.н., доцент кафедри технологій та автоматизації машинобудування ВНТУ"},
+      en:{role:"Organizing Committee Member", name:"Serhii Repinskyi", aff:"Ph.D. (Eng.), Associate Professor, Department of Mechanical Engineering Technologies and Automation, VNTU"},
+      email:"repinskyisv@gmail.com", phone:"" }
+  ];
+
+  var SECTIONS = [
+    { n:1, uk:{ title:"Інтелектуальні моделі та алгоритми глибинного навчання", text:"Розвиток ефективних архітектур і методів навчання, що забезпечують інтерпретованість, енергоефективність і довіру до ШІ-систем — ключовий виклик сучасної науки." },
+           en:{ title:"Deep Learning Models and Algorithms", text:"Developing efficient architectures and training methods that ensure interpretability, energy efficiency, and trust in AI systems is a key challenge of contemporary science." } },
+    { n:2, uk:{ title:"Цифрові двійники та кіберфізичні системи в машинобудуванні", text:"Використання цифрових двійників для моделювання, прогнозування та оптимізації виробничих процесів формує основу індустрії 5.0." },
+           en:{ title:"Digital Twins and Cyber-Physical Systems in Engineering", text:"Using digital twins for modeling, forecasting, and optimizing production processes forms the foundation of Industry 5.0." } },
+    { n:3, uk:{ title:"Інтелектуальні виробничі системи та Smart Manufacturing", text:"Інтеграція ШІ, робототехніки та аналітики даних у виробничі процеси підвищує продуктивність, адаптивність і сталий розвиток підприємств." },
+           en:{ title:"AI-Driven Manufacturing Systems", text:"Integrating AI, robotics, and data analytics into production processes increases enterprise productivity, adaptability, and sustainability." } },
+    { n:4, uk:{ title:"Нейромережеві технології в автономних і мобільних робототехнічних системах", text:"Штучний інтелект забезпечує автономність і безпеку роботизованих систем у промисловості, транспорті та оборонних застосуваннях." },
+           en:{ title:"AI in Autonomous and Robotic Systems", text:"Artificial intelligence ensures the autonomy and safety of robotic systems in industry, transportation, and defense applications." } },
+    { n:5, uk:{ title:"AI-кероване управління, оптимізація та діагностика технічних систем", text:"Використання нейромереж для прогнозного обслуговування, адаптивного керування та зменшення енергоспоживання підвищує ефективність складних технічних об'єктів." },
+           en:{ title:"AI-Based Control and Predictive Maintenance", text:"Using neural networks for predictive maintenance, adaptive control, and reduced energy consumption improves the efficiency of complex technical systems." } },
+    { n:6, uk:{ title:"Штучний інтелект в освіті та соціально-економічних системах", text:"Інтелектуальні системи відкривають нові можливості персоналізованого навчання, управління знаннями та оптимізації суспільних процесів." },
+           en:{ title:"AI in Education and Socio-Economic Systems", text:"Intelligent systems open new possibilities for personalized learning, knowledge management, and the optimization of social processes." } },
+    { n:7, uk:{ title:"Етичні, філософські та правові аспекти застосування ШІ", text:"Формування етичних стандартів і нормативних рамок для розвитку ШІ є критично важливим для гармонійної інтеграції технологій у суспільство." },
+           en:{ title:"Ethics, Philosophy, and Regulation of AI", text:"Establishing ethical standards and regulatory frameworks for AI development is critically important for the harmonious integration of technology into society." } }
+  ];
+
+  var CONTACTS = COMMITTEE; // same people, rendered with email/phone on the Contacts page
+
+  var CHECKLIST = [
+    { uk:{ group:"Обсяг і файл", items:[ "Стаття — до 10 сторінок, подається одним файлом." ]},
+      en:{ group:"Length and file", items:[ "The article is up to 10 pages, submitted as a single file." ]} },
+    { uk:{ group:"Титульна сторінка", items:[
+        "УДК вказано окремим рядком.",
+        "Прізвище та ініціали автора(ів), організація, місто, країна.",
+        "Назва — Times New Roman 14 pt, ПРОПИСНИМИ буквами, по центру.",
+        "Анотація і ключові слова — мовою публікації та англійською (TNR Cyr 11 pt, по ширині, до 15 рядків)."
+      ]},
+      en:{ group:"Title page", items:[
+        "UDC code given on its own line.",
+        "Author(s) surname and initials, institution, city, country.",
+        "Title in Times New Roman 14 pt, ALL CAPS, centered.",
+        "Abstract and keywords in the publication language and in English (TNR Cyr 11 pt, justified, up to 15 lines)."
+      ]} },
+    { uk:{ group:"Параметри сторінки та абзацу", items:[
+        "Поля: верхнє 2 см, нижнє 2 см, ліве 3 см, праве 1,5 см.",
+        "Відступ першого рядка абзацу — 1,25 см.",
+        "Міжрядковий інтервал — 1.0 (одинарний)."
+      ]},
+      en:{ group:"Page and paragraph setup", items:[
+        "Margins: top 2 cm, bottom 2 cm, left 3 cm, right 1.5 cm.",
+        "First-line paragraph indent — 1.25 cm.",
+        "Line spacing — 1.0 (single)."
+      ]} },
+    { uk:{ group:"Структура статті", items:[
+        "Основний текст — Times New Roman Cyr, 12 pt.",
+        "2.1 Постановка проблеми.",
+        "2.2 Аналіз останніх публікацій.",
+        "2.3 Підкреслення невирішених частин проблеми.",
+        "2.4 Мета роботи та постановка завдань.",
+        "2.5 Виклад основного матеріалу дослідження (з рисунками й таблицями в тексті).",
+        "Розділ ВИСНОВКИ — великими літерами, TNR 12 pt, по центру.",
+        "СПИСОК ЛІТЕРАТУРИ — великими літерами по центру; джерела за ДСТУ 8302:2015, курсив TNR Cyr 10 pt, по ширині, одинарний інтервал."
+      ]},
+      en:{ group:"Article structure", items:[
+        "Main text — Times New Roman Cyr, 12 pt.",
+        "2.1 Statement of the problem.",
+        "2.2 Review of recent publications.",
+        "2.3 Identification of the unresolved parts of the problem.",
+        "2.4 Purpose of the work and research objectives.",
+        "2.5 Presentation of the main research material (with figures and tables in the text).",
+        "CONCLUSIONS section — capital letters, TNR 12 pt, centered.",
+        "REFERENCES — capital letters, centered; sources per DSTU 8302:2015, italic TNR Cyr 10 pt, justified, single spacing."
+      ]} },
+    { uk:{ group:"Формули, рисунки, таблиці", items:[
+        "Формули — через MathType або вбудований редактор Word, TNR 12 pt; номер у дужках праворуч, напр. (1).",
+        "Рисунки центровані; підпис знизу: «Рисунок 1. Назва рисунка.»",
+        "Таблиці центровані; назва зверху: «Таблиця 1. Назва таблиці.»"
+      ]},
+      en:{ group:"Formulas, figures, tables", items:[
+        "Formulas — via MathType or Word's built-in equation editor, TNR 12 pt; number in parentheses on the right, e.g. (1).",
+        "Figures centered; caption below: \"Figure 1. Figure title.\"",
+        "Tables centered; caption above: \"Table 1. Table title.\""
+      ]} },
+    { uk:{ group:"Відомості про авторів", items:[
+        "Прізвище, ім'я, по батькові кожного автора.",
+        "Науковий ступінь і вчене звання (якщо є).",
+        "Установа, посада.",
+        "E-mail і моб. телефон для зв'язку."
+      ]},
+      en:{ group:"Author information", items:[
+        "Full name of each author.",
+        "Academic degree and title (if any).",
+        "Institution and position.",
+        "E-mail and mobile phone number."
+      ]} }
+  ];
+
+  var REQ_LIST = {
+    uk:[
+      "До 10 сторінок, один файл; поля 2 / 2 / 3 / 1,5 см (верх / низ / ліво / право).",
+      "Times New Roman Cyr 12 pt, інтервал 1.0, відступ абзацу 1,25 см.",
+      "УДК окремим рядком; назва — ВЕРХНІМ РЕЄСТРОМ, по центру, TNR 14 pt.",
+      "Анотація та ключові слова мовою публікації й англійською.",
+      "Розділи 2.1–2.5; ВИСНОВКИ і СПИСОК ЛІТЕРАТУРИ — по центру, великими літерами.",
+      "Формули, рисунки й таблиці — з нумерацією, підписами й центруванням за зразком."
+    ],
+    en:[
+      "Up to 10 pages, single file; margins 2 / 2 / 3 / 1.5 cm (top / bottom / left / right).",
+      "Times New Roman Cyr 12 pt, single spacing, 1.25 cm first-line indent.",
+      "UDC on its own line; title in ALL CAPS, centered, TNR 14 pt.",
+      "Abstract and keywords in the publication language and in English.",
+      "Sections 2.1–2.5; CONCLUSIONS and REFERENCES centered, in capital letters.",
+      "Formulas, figures, and tables formatted per the sample (numbering, captions, centering)."
+    ]
+  };
+
+  var TL_DATA = [
+    { uk:{ date:'відкрито', title:'Реєстрація участі', desc:'Обов’язкова для всіх учасників — доповідачів, співавторів і слухачів.' },
+      en:{ date:'open now', title:'Participant registration', desc:'Required for all participants — speakers, co-authors, and listeners.' },
+      refKey:null },
+    { uk:{ date:'до 30.11.2026', title:'Дедлайн подання доповідей', desc:'Текст статті та відомості про авторів надсилаються на пошту оргкомітету (окремо від реєстрації).' },
+      en:{ date:'by 30.11.2026', title:'Manuscript submission deadline', desc:'The paper text and author details are sent to the organizing committee’s email (separately from registration).' },
+      refKey:'DEADLINE' },
+    { uk:{ date:'11–12.12.2026', title:'Проведення конференції', desc:'Змішаний формат: очно у Вінниці та on-line.' },
+      en:{ date:'11–12.12.2026', title:'Conference dates', desc:'Hybrid format: on-site in Vinnytsia and online.' },
+      refKey:'CONF_START' },
+    { uk:{ date:'після конференції', title:'Публікація збірника', desc:'Електронний збірник матеріалів; кращі статті — до журналу «Штучний інтелект».' },
+      en:{ date:'after the conference', title:'Proceedings published', desc:'Electronic conference proceedings; top papers forwarded to the journal "Shtuchnyi Intelekt".' },
+      refKey:null }
+  ];
+
+  /* ---------------- REGISTRATION FORM OPTION SETS ----------------
+     `value` is the exact string sent to the Google Form/Sheet.
+     Confirmed 14.09.2026 from a real pre-filled link generated in the
+     Google Forms editor and sent by the user (not guessed):
+       - participationFormat, option 1 ("Off-line"): exact confirmed text below
+         (note the real form's own double space before "(Vinnytsia)")
+       - manuscript "Yes" and invitation "No": exact confirmed text below
+     NOT independently confirmed — inferred from the same "EN / UK" pattern
+     seen on the confirmed options above (options 2–3 of participationFormat
+     were not the ones selected in the pre-filled link the user sent):
+       - participationFormat options 2 and 3 (Zoom / Google Meet)
+     If these don't match the form editor exactly, generate one more
+     pre-filled link selecting "Online — Zoom" (or Google Meet) and send it
+     to get the exact text — Google still records whatever text is sent
+     either way, so this only affects how clean the values look in the Sheet. */
+  var PARTICIPATION_FORMAT_OPTIONS = [
+    { value:'Off-line  (Vinnytsia) / Очно (Вінниця)', uk:'Очно (Вінниця)', en:'Off-line (Vinnytsia)' }, // confirmed
+    { value:'Online — Zoom / Онлайн — Zoom', uk:'Online — Zoom', en:'Online — Zoom' }, // NOT independently confirmed — verify
+    { value:'Online — Google Meet / Онлайн — Google Meet', uk:'Online — Google Meet', en:'Online — Google Meet' } // NOT independently confirmed — verify
+  ];
+  var YES_NO_OPTIONS = [
+    { value:'Yes / Так', uk:'Так', en:'Yes' }, // confirmed
+    { value:'No / Ні', uk:'Ні', en:'No' }      // confirmed
+  ];
+
+  /* ---------------- UI STRINGS ---------------- */
+  var I18N = {
+    uk: {
+      pageTitle:'НМТЗ-2026',
+      navAria:'Розділи сайту',
+      nav:{ home:'Головна', about:'Про конференцію', register:'Реєстрація', submit:'Подання доповіді', status:'Рецензування', contacts:'Контакти' },
+      themeTitle:'Перемкнути тему',
+      langBtn:'EN', langTitle:'Switch to English',
+      letterhead:'Вінницький національний технічний університет (Україна)',
+      homeEyebrow:'XXV Міжнародна наукова конференція',
+      homeTitle:'«Нейромережні технології та їх застосування» НМТЗ-2026',
+      homeLede:'Оргкомітет запрошує Вас взяти участь у роботі конференції 11–12 грудня 2026 року в змішаному форматі (on-line та off-line) на базі Вінницького національного технічного університету. Обговорення результатів наукових розробок планується за сімома напрямками — від глибинного навчання й цифрових двійників до розумного виробництва, робототехніки, AI-керованого управління, застосувань штучного інтелекту в освіті та етичних і правових аспектів його розвитку.',
+      metaDatesK:'Дати', metaDatesV:'11–12 грудня 2026',
+      metaVenueK:'Місце', metaVenueV:'Вінницький національний технічний університет, м. Вінниця, Україна',
+      metaFormatK:'Формат', metaFormatV:'змішаний — очно та on-line',
+      metaLangK:'Мови', metaLangV:'українська, англійська',
+      metaFeeK:'Внесок', metaFeeV:'не передбачений',
+      ctaRegister:'Зареєструватися →', ctaSubmit:'Подати доповідь →', ctaAbout:'Тематика і комітет',
+      pathAEyebrow:'Хочу взяти участь', pathATitle:'Зареєструйтеся як учасник',
+      pathAText:'Реєстрація обов’язкова для кожного — доповідача, співавтора чи слухача, який просто відвідає конференцію.',
+      pathABtn:'Зареєструватися →',
+      pathBEyebrow:'Хочу подати доповідь', pathBTitle:'Надішліть текст доповіді',
+      pathBText:'Окремо від реєстрації підготуйте статтю за вимогами й надішліть її на розгляд оргкомітету.',
+      pathBBtn:'Подати доповідь →',
+      statSectionsL:'тематичних напрямків', statPartnersL:'установ-партнерів, 8 країн',
+      statDeadlineL:'днів до дедлайну подання',
+      keyDatesEyebrow:'Ключові дати',
+      howEyebrow:'Як взяти участь',
+      step1:'<strong>1. Реєстрація.</strong> Заповніть форму реєстрації — обов’язково для всіх учасників, включно зі слухачами.',
+      step2:'<strong>2. Підготовка доповіді.</strong> Оформіть текст доповіді за вимогами (для доповідачів і співавторів).',
+      step3:'<strong>3. Подання статті.</strong> Надішліть файл статті та відомості про авторів на пошту оргкомітету до 30 листопада 2026 р.',
+      step4:'<strong>4. Рецензування.</strong> Оргкомітет перевіряє відповідність вимогам; за потреби надсилає зауваження на вашу пошту.',
+      step5:'<strong>5. Участь у конференції.</strong> 11–12 грудня 2026 р.; стаття виходить у збірнику, а рекомендовані — у журналі «Штучний інтелект».',
+      stepsNote:'Для слухачів, які не подають доповідь, достатньо кроку 1.',
+      homeInfoNote:'Реєстрація учасника обов’язкова для всіх — доповідачів, співавторів і слухачів — і є окремим процесом від подання наукової статті. Ця сторінка — інформаційна оболонка конференції з формою реєстрації, вимогами до оформлення статей і прямими контактами оргкомітету.',
+
+      aboutEyebrow:'Про конференцію',
+      aboutH2:'Мета, організатори та оргкомітет',
+      goalsH3:'Мета конференції',
+      goal1:'Обговорення результатів наукових досліджень і розробок у сфері нейромережевих технологій, цифрових двійників, розумного виробництва та робототехніки.',
+      goal2:'Розвиток міжнародної співпраці між закладами освіти й науковими установами України та країн-партнерів.',
+      goal3:'Публікація найкращих доповідей у збірнику матеріалів конференції та рекомендація вибраних статей фаховому журналу «Штучний інтелект».',
+      orgsH3:'Організатори та установи-партнери',
+      orgsLede:'Конференція проводиться на базі Вінницького національного технічного університету за участі партнерів з 8 країн.',
+      committeeH3:'Організаційний комітет',
+      langH3:'Робочі мови',
+      badgeUk:'Українська',
+      topicsH3:'Тематичні напрямки конференції',
+      topicsNote:'Оргкомітет також розглядає пропозиції учасників з інших актуальних напрямків у світлі тематики конференції.',
+      sectionLabel:'НАПРЯМОК',
+
+      registerEyebrow:'Реєстрація',
+      registerH2:'Реєстрація учасника — обов’язкова',
+      registerLede:'Реєстрація потрібна кожному учаснику конференції — доповідачу, співавтору чи слухачу, який не подає статтю. Заповніть форму нижче.',
+      registerSeparateNote:'Реєстрація та подання наукової статті — два окремі процеси. Якщо ви також подаєте доповідь, після реєстрації перейдіть до розділу «Подання доповіді».',
+      regConfigNoticeText:'Онлайн-форму реєстрації ще не підключено до Google Форми оргкомітету. Поля нижче показують, які дані збиратимуться, але надсилання поки вимкнено — зверніться до розробника сторінки, щоб вказати REGISTRATION_FORM_URL і REGISTRATION_ENTRY_IDS у коді.',
+      regBlock1Legend:'Особисті дані',
+      regFullNameLabel:'ПІБ',
+      regEmailLabel:'Електронна пошта', regPhoneLabel:'Телефон',
+      regBlock2Legend:'Установа',
+      regCountryLabel:'Країна', regInstitutionLabel:'Установа', regDegreePositionLabel:'Науковий ступінь, вчене звання, посада',
+      regBlock3Legend:'Участь',
+      regParticipationFormatLabel:'Формат участі', regManuscriptLabel:'Чи подаватимете рукопис?',
+      regTrackLabel:'Секція', regTrackPlaceholder:'Оберіть секцію…',
+      regInviteLabel:'Чи потрібне офіційне запрошення?', regInvitePlaceholder:'Оберіть…',
+      regBlock4Legend:'Додаткові коментарі',
+      regCommentsLabel:'Додаткові коментарі',
+      regBlock5Legend:'Згода',
+      regConsentLabel:'Я даю згоду на обробку моїх персональних даних оргкомітетом НМТЗ-2026 з метою реєстрації та проведення конференції.',
+      regSubmitBtn:'ЗАРЕЄСТРУВАТИСЯ',
+      regNotConfigured:'Онлайн-форма реєстрації ще не підключена оргкомітетом. Дані з цієї форми поки нікуди не надсилаються.',
+      regInvalid:'Перевірте, будь ласка, позначені поля — деякі обов’язкові дані відсутні або вказані некоректно.',
+      regThankYouTitle:'Дякуємо за реєстрацію!',
+      regThankYouText:'Дані передано організаційному комітету НМТЗ-2026. Якщо Ви плануєте подати наукову доповідь, перейдіть до розділу «Подання доповіді».',
+      regThankYouCta:'До подання доповіді →',
+      registerPanelTitle:'Тематичні напрямки',
+      regWhoTitle:'Хто реєструється',
+      regWho1:'Доповідач — виступає з доповіддю та подає статтю.',
+      regWho2:'Співавтор — зазначений серед авторів статті, але не обов’язково виступає.',
+      regWho3:'Слухач — бере участь без подання доповіді; реєстрація однаково обов’язкова.',
+      regDeadlineSet:function(d){ return 'Дедлайн реєстрації: ' + d + '.'; },
+      regDeadlineOpen:'Окремий дедлайн реєстрації оргкомітет поки не встановив — рекомендуємо зареєструватися якомога раніше, до дедлайну подання статей (30 листопада 2026 р.).',
+
+      submitEyebrow:'Подання доповіді',
+      submitH2:'Надсилання тексту доповіді',
+      submitLede:'Текст доповіді, оформлений як наукова стаття (до 10 сторінок, одним файлом), надсилається на <strong>'+EMAIL+'</strong> до <strong>30 листопада 2026 р.</strong> Перед відправленням пройдіть чек-лист оформлення нижче.',
+      submitSeparateNote:'Реєстрація учасника є обов’язковою і виконується окремо (розділ «Реєстрація»). Подання наукової доповіді здійснюється тут, відповідно до вимог конференції.',
+      deadlineRemaining:function(n){ return 'До дедлайну подання доповідей (30 листопада 2026 р.) залишилося ' + n + ' дн.'; },
+      deadlinePassed:'Термін подання доповідей (30 листопада 2026 р.) минув — уточніть можливість подання в оргкомітету.',
+      checklistLegend:'Чек-лист оформлення статті — самоперевірка',
+      clCountTpl:function(checked,total){ return checked + ' / ' + total + ' пунктів позначено'; },
+      submitFormEyebrow:'Форма подання (онлайн)',
+      reqPanelTitle:'Головні вимоги до оформлення',
+      submitWarnNote:'Матеріали, що не відповідають тематиці конференції, вимогам до оформлення або надійшли з запізненням, до збірника не включаються. Організаційний внесок не передбачається.',
+
+      statusEyebrow:'Рецензування',
+      statusH2:'Після подання: рецензування та доопрацювання',
+      statusLede:'Реєстрація → подання статті → перевірка оргкомітетом → рецензування → доопрацювання (за потреби) → рішення → збірник. Прийняття статті не є автоматичним.',
+      statusGoal1:'<strong>Розгляд.</strong> Оргкомітет перевіряє доповідь на відповідність тематиці й вимогам до оформлення.',
+      statusGoal2:'<strong>Зауваження.</strong> За потреби рецензенти надсилають зауваження та пропозиції на вашу пошту.',
+      statusGoal3:'<strong>Доопрацювання.</strong> Ви надсилаєте виправлену версію статті у відповідь на лист оргкомітету.',
+      statusGoal4:'<strong>Рішення.</strong> Оргкомітет підтверджує включення статті до збірника; кращі — рекомендує журналу «Штучний інтелект».',
+      statusInfoNote1:'До збірника йде файл, надісланий на пошту оргкомітету, або — якщо були зауваження — доопрацьована версія, надіслана у відповідь на лист рецензентів. Окремої форми для «фінального файлу» не потрібно.',
+      statusFormEyebrow:'Форма для доопрацьованої версії (онлайн)',
+      statusInfoNote2:'Із загальних питань щодо стану розгляду звертайтеся до оргкомітету: <a href="mailto:'+EMAIL+'">'+EMAIL+'</a> · '+PHONE+'.',
+      embedPlaceholderManuscript:'Google Форму подання рукопису ще не підключено.',
+      embedPlaceholderRevision:'Google Форму для доопрацьованої версії ще не підключено.',
+      embedVarNote:function(v){ return 'Вставте посилання у змінну ' + v + ' на початку файлу.'; },
+      embedOpenLink:'Відкрити форму в новій вкладці ↗',
+
+      contactsEyebrow:'Контакти',
+      contactsH2:'Організаційний комітет',
+      venueEyebrow:'Місце проведення',
+      venueName:'Вінницький національний технічний університет',
+      venueDept:'Кафедра технологій та автоматизації машинобудування',
+      venueLine:'м. Вінниця, Україна · формат — off-line та on-line',
+      contactsPanel:'З усіх питань участі звертайтеся до оргкомітету: <a class="mono" href="mailto:'+EMAIL+'">'+EMAIL+'</a> · <span class="mono">'+PHONE+'</span>',
+
+      footerLine1:'XXV Міжнародна наукова конференція «Нейромережні технології та їх застосування» НМТЗ-2026 · 11–12 грудня 2026 · Вінниця',
+      footerLine2:'Збірник матеріалів конференції; рекомендовані статті — до журналу «Штучний інтелект»'
+    },
+    en: {
+      pageTitle:'NNTA-2026',
+      navAria:'Site sections',
+      nav:{ home:'Home', about:'About', register:'Registration', submit:'Submit Paper', status:'Peer Review', contacts:'Contacts' },
+      themeTitle:'Toggle theme',
+      langBtn:'УКР', langTitle:'Перемкнути на українську',
+      letterhead:'Vinnytsia National Technical University (Ukraine)',
+      homeEyebrow:'25th International Scientific Conference',
+      homeTitle:'Neural Network Technologies and Their Applications — NNTA-2026',
+      homeLede:'The organizing committee invites you to take part in the conference on 11–12 December 2026, held in hybrid format (on-site and online) at Vinnytsia National Technical University. Discussion of research results is planned across seven tracks — from deep learning and digital twins to smart manufacturing, robotics, AI-driven control, applications of artificial intelligence in education, and the ethical and legal aspects of its development.',
+      metaDatesK:'Dates', metaDatesV:'11–12 December 2026',
+      metaVenueK:'Venue', metaVenueV:'Vinnytsia National Technical University, Vinnytsia, Ukraine',
+      metaFormatK:'Format', metaFormatV:'hybrid — on-site and online',
+      metaLangK:'Languages', metaLangV:'Ukrainian, English',
+      metaFeeK:'Fee', metaFeeV:'none',
+      ctaRegister:'Register →', ctaSubmit:'Submit a paper →', ctaAbout:'Topics & committee',
+      pathAEyebrow:'I want to attend', pathATitle:'Register as a participant',
+      pathAText:'Registration is required for everyone — a speaker, a co-author, or a listener who will simply attend.',
+      pathABtn:'Register →',
+      pathBEyebrow:'I want to submit a paper', pathBTitle:'Submit your paper',
+      pathBText:'Separately from registration, prepare your paper per the requirements and send it to the organizing committee for review.',
+      pathBBtn:'Submit a paper →',
+      statSectionsL:'conference tracks', statPartnersL:'partner institutions, 8 countries',
+      statDeadlineL:'days to submission deadline',
+      keyDatesEyebrow:'Key dates',
+      howEyebrow:'How to take part',
+      step1:'<strong>1. Registration.</strong> Fill out the registration form — required for every participant, listeners included.',
+      step2:'<strong>2. Prepare the paper.</strong> Format your paper per the requirements (for speakers and co-authors).',
+      step3:'<strong>3. Submit the paper.</strong> Send the paper file and author details to the organizing committee’s email by 30 November 2026.',
+      step4:'<strong>4. Peer review.</strong> The organizing committee checks compliance with the requirements and may email comments.',
+      step5:'<strong>5. Take part in the conference.</strong> 11–12 December 2026; your paper joins the proceedings, and recommended ones go to the journal "Shtuchnyi Intelekt".',
+      stepsNote:'Listeners who are not submitting a paper only need step 1.',
+      homeInfoNote:'Participant registration is required for everyone — speakers, co-authors, and listeners — and is a separate process from submitting a scientific paper. This page is the conference’s information shell, with the registration form, the paper formatting requirements, and direct contacts for the organizing committee.',
+
+      aboutEyebrow:'About the Conference',
+      aboutH2:'Goals, Organizers, and Organizing Committee',
+      goalsH3:'Conference Goals',
+      goal1:'Discussing research results and developments in neural network technologies, digital twins, smart manufacturing, and robotics.',
+      goal2:'Strengthening international cooperation between educational and research institutions in Ukraine and partner countries.',
+      goal3:'Publishing the best papers in the conference proceedings and recommending selected articles to the peer-reviewed journal "Shtuchnyi Intelekt" (Artificial Intelligence).',
+      orgsH3:'Organizers and Partner Institutions',
+      orgsLede:'The conference is hosted by Vinnytsia National Technical University with partners from 8 countries.',
+      committeeH3:'Organizing Committee',
+      langH3:'Working Languages',
+      badgeUk:'Ukrainian',
+      topicsH3:'Conference Tracks',
+      topicsNote:'The organizing committee also welcomes proposals on other topics relevant to the conference themes.',
+      sectionLabel:'TRACK',
+
+      registerEyebrow:'Registration',
+      registerH2:'Participant Registration — Required',
+      registerLede:'Registration is required for every conference participant — a speaker, a co-author, or a listener not submitting a paper. Fill out the form below.',
+      registerSeparateNote:'Registration and paper submission are two separate processes. If you are also submitting a paper, go to the "Submit Paper" section after registering.',
+      regConfigNoticeText:'The online registration form is not yet connected to the organizing committee’s Google Form. The fields below show what data will be collected, but submission is currently disabled — ask the page’s developer to set REGISTRATION_FORM_URL and REGISTRATION_ENTRY_IDS in the code.',
+      regBlock1Legend:'Personal details',
+      regFullNameLabel:'Full name',
+      regEmailLabel:'Email address', regPhoneLabel:'Phone number',
+      regBlock2Legend:'Institution',
+      regCountryLabel:'Country', regInstitutionLabel:'Institution', regDegreePositionLabel:'Academic degree, academic title, position',
+      regBlock3Legend:'Participation',
+      regParticipationFormatLabel:'Participation format', regManuscriptLabel:'Will you also submit a manuscript?',
+      regTrackLabel:'Section', regTrackPlaceholder:'Choose a section…',
+      regInviteLabel:'Do you need an official invitation letter?', regInvitePlaceholder:'Choose…',
+      regBlock4Legend:'Additional comments',
+      regCommentsLabel:'Additional comments',
+      regBlock5Legend:'Consent',
+      regConsentLabel:'I consent to the processing of my personal data by the NNTA-2026 organizing committee for the purpose of registration and running the conference.',
+      regSubmitBtn:'REGISTER',
+      regNotConfigured:'The online registration form has not been connected by the organizing committee yet. Data from this form is not being sent anywhere at the moment.',
+      regInvalid:'Please check the highlighted fields — some required information is missing or incorrectly formatted.',
+      regThankYouTitle:'Thank you for registering!',
+      regThankYouText:'Your details have been sent to the NNTA-2026 organizing committee. If you plan to submit a scientific paper, go to the "Submit Paper" section.',
+      regThankYouCta:'Go to paper submission →',
+      registerPanelTitle:'Conference tracks',
+      regWhoTitle:'Who registers',
+      regWho1:'Speaker — presents a paper and submits the article.',
+      regWho2:'Co-author — listed among the paper’s authors, without necessarily presenting.',
+      regWho3:'Listener — attends without submitting a paper; registration is required all the same.',
+      regDeadlineSet:function(d){ return 'Registration deadline: ' + d + '.'; },
+      regDeadlineOpen:'The organizing committee has not set a separate registration deadline yet — we recommend registering as early as possible, ahead of the paper submission deadline (30 November 2026).',
+
+      submitEyebrow:'Manuscript Submission',
+      submitH2:'Sending Your Paper',
+      submitLede:'The paper text, prepared as a scientific article (up to 10 pages, as a single file), is sent to <strong>'+EMAIL+'</strong> by <strong>30 November 2026.</strong> Before sending, work through the formatting checklist below.',
+      submitSeparateNote:'Participant registration is required and is done separately (see the "Registration" section). Submitting a scientific paper happens here, per the conference requirements.',
+      deadlineRemaining:function(n){ return 'Days remaining until the manuscript submission deadline (30 November 2026): ' + n; },
+      deadlinePassed:'The manuscript submission deadline (30 November 2026) has passed — please contact the organizing committee to check whether late submission is possible.',
+      checklistLegend:'Article formatting checklist — self-check',
+      clCountTpl:function(checked,total){ return checked + ' / ' + total + ' items checked'; },
+      submitFormEyebrow:'Submission form (online)',
+      reqPanelTitle:'Key formatting requirements',
+      submitWarnNote:'Papers that do not match the conference topics, do not meet the formatting requirements, or arrive after the deadline will not be included in the proceedings. There is no participation fee.',
+
+      statusEyebrow:'Peer Review',
+      statusH2:'After Submission: Review and Revision',
+      statusLede:'Registration → paper submission → organizing committee’s check → peer review → revision (if needed) → decision → proceedings. Acceptance of a paper is not automatic.',
+      statusGoal1:'<strong>Review.</strong> The organizing committee checks the paper against the conference topics and formatting requirements.',
+      statusGoal2:'<strong>Comments.</strong> If needed, reviewers send comments and suggestions to your email.',
+      statusGoal3:'<strong>Revision.</strong> You send the corrected version of the paper as a reply to the organizing committee’s email.',
+      statusGoal4:'<strong>Decision.</strong> The organizing committee confirms inclusion in the proceedings; the best papers are recommended to the journal "Shtuchnyi Intelekt".',
+      statusInfoNote1:'The proceedings use the file sent to the organizing committee’s email, or — if there were comments — the revised version sent as a reply to the reviewers’ email. No separate form for a "final file" is needed.',
+      statusFormEyebrow:'Revised-version form (online)',
+      statusInfoNote2:'For general questions about the status of your submission, contact the organizing committee: <a href="mailto:'+EMAIL+'">'+EMAIL+'</a> · '+PHONE+'.',
+      embedPlaceholderManuscript:'The manuscript submission Google Form has not been connected yet.',
+      embedPlaceholderRevision:'The revised-version Google Form has not been connected yet.',
+      embedVarNote:function(v){ return 'Paste the link into the ' + v + ' variable near the top of the file.'; },
+      embedOpenLink:'Open the form in a new tab ↗',
+
+      contactsEyebrow:'Contacts',
+      contactsH2:'Organizing Committee',
+      venueEyebrow:'Venue',
+      venueName:'Vinnytsia National Technical University',
+      venueDept:'Department of Mechanical Engineering Technologies and Automation',
+      venueLine:'Vinnytsia, Ukraine · format — on-site and online',
+      contactsPanel:'For any questions about participation, contact the organizing committee: <a class="mono" href="mailto:'+EMAIL+'">'+EMAIL+'</a> · <span class="mono">'+PHONE+'</span>',
+
+      footerLine1:'25th International Scientific Conference "Neural Network Technologies and Their Applications" NNTA-2026 · 11–12 December 2026 · Vinnytsia',
+      footerLine2:'Conference proceedings; recommended papers are forwarded to the journal "Shtuchnyi Intelekt"'
+    }
+  };
+
+  /* ---------------- HELPERS ---------------- */
+  function $(sel, ctx){ return (ctx||document).querySelector(sel); }
+  function $all(sel, ctx){ return Array.prototype.slice.call((ctx||document).querySelectorAll(sel)); }
+  function el(tag, attrs, children){
+    var e = document.createElement(tag);
+    if(attrs) Object.keys(attrs).forEach(function(k){
+      if(k === 'class') e.className = attrs[k];
+      else if(k === 'html') e.innerHTML = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    });
+    (children||[]).forEach(function(c){ if(c) e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return e;
+  }
+  function setText(id, text){ var e = document.getElementById(id); if(e) e.textContent = text; }
+  function setHtml(id, html){ var e = document.getElementById(id); if(e) e.innerHTML = html; }
+  function daysBetween(a,b){ return Math.ceil((b - a) / 86400000); }
+  function safeGet(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } }
+  function safeSet(key,val){ try{ localStorage.setItem(key,val); }catch(e){} }
+  function fmtDate(d){ function pad(n){return n<10?'0'+n:''+n;} return pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'+d.getFullYear(); }
+
+  var DEADLINE = new Date(2026,10,30);   // 30 листопада 2026
+  var CONF_START = new Date(2026,11,11); // 11 грудня 2026
+  var REF_DATES = { DEADLINE:DEADLINE, CONF_START:CONF_START };
+  var NOW = new Date();
+
+  /* ---------------- LANGUAGE STATE ---------------- */
+  var LANG_DEFAULT = safeGet('nntiz-lang') === 'en' ? 'en' : 'uk';
+  var currentLang = LANG_DEFAULT;
+
+  /* ---------------- NAV ---------------- */
+  var VIEWS = ['home','about','register','submit','status','contacts'];
+  function showView(name){
+    if(VIEWS.indexOf(name) === -1) name = 'home';
+    VIEWS.forEach(function(v){
+      var sec = document.getElementById('view-'+v);
+      if(sec) sec.hidden = (v !== name);
+    });
+    $all('nav.tabs button').forEach(function(b){
+      if(b.getAttribute('data-nav') === name) b.setAttribute('aria-current','page');
+      else b.removeAttribute('aria-current');
+    });
+    window.scrollTo({top:0, behavior:'instant' in document.documentElement.style ? 'instant':'auto'});
+    history.replaceState(null,'','#'+name);
+  }
+  $all('[data-nav]').forEach(function(b){
+    b.addEventListener('click', function(){ showView(b.getAttribute('data-nav')); });
+  });
+  window.addEventListener('DOMContentLoaded', function(){
+    var h = location.hash.replace('#','');
+    showView(h || 'home');
+  });
+
+  /* ---------------- THEME TOGGLE ---------------- */
+  var themeBtn = document.getElementById('themeToggle');
+  function applyTheme(t){
+    if(t) document.documentElement.setAttribute('data-theme', t);
+    else document.documentElement.removeAttribute('data-theme');
+    safeSet('nntiz-theme', t || '');
+  }
+  themeBtn.addEventListener('click', function(){
+    var cur = document.documentElement.getAttribute('data-theme');
+    var next = cur === 'dark' ? 'light' : (cur === 'light' ? null : 'dark');
+    applyTheme(next);
+  });
+  (function initTheme(){
+    var saved = safeGet('nntiz-theme');
+    if(saved) applyTheme(saved);
+  })();
+
+  /* ---------------- RENDER: STATIC TEXT ---------------- */
+  function renderStaticText(){
+    var t = I18N[currentLang];
+    document.getElementById('pageTitle').textContent = t.pageTitle;
+    document.title = t.pageTitle;
+    document.documentElement.lang = currentLang;
+
+    document.getElementById('mainNav').setAttribute('aria-label', t.navAria);
+    $all('nav.tabs button').forEach(function(b){
+      var key = b.getAttribute('data-nav');
+      if(t.nav[key]) b.textContent = t.nav[key];
+    });
+
+    themeBtn.title = t.themeTitle; themeBtn.setAttribute('aria-label', t.themeTitle);
+    var langBtn = document.getElementById('langToggle');
+    langBtn.textContent = t.langBtn; langBtn.title = t.langTitle; langBtn.setAttribute('aria-label', t.langTitle);
+
+    setText('homeEyebrow', t.homeEyebrow);
+    setText('homeTitle', t.homeTitle);
+    setText('homeLede', t.homeLede);
+    setText('metaDatesK', t.metaDatesK); setText('metaDatesV', t.metaDatesV);
+    setText('metaVenueK', t.metaVenueK); setText('metaVenueV', t.metaVenueV);
+    setText('metaFormatK', t.metaFormatK); setText('metaFormatV', t.metaFormatV);
+    setText('metaLangK', t.metaLangK); setText('metaLangV', t.metaLangV);
+    setText('metaFeeK', t.metaFeeK); setText('metaFeeV', t.metaFeeV);
+    setText('ctaRegister', t.ctaRegister); setText('ctaSubmit', t.ctaSubmit); setText('ctaAbout', t.ctaAbout);
+    setText('pathAEyebrow', t.pathAEyebrow); setText('pathATitle', t.pathATitle); setText('pathAText', t.pathAText); setText('pathABtn', t.pathABtn);
+    setText('pathBEyebrow', t.pathBEyebrow); setText('pathBTitle', t.pathBTitle); setText('pathBText', t.pathBText); setText('pathBBtn', t.pathBBtn);
+    setText('statSectionsL', t.statSectionsL); setText('statPartnersL', t.statPartnersL);
+    setText('statDeadlineL', t.statDeadlineL);
+    setText('statDigestN', currentLang === 'uk' ? 'Збірник' : 'Proceedings');
+    setText('statDigestL', currentLang === 'uk' ? 'збірник матеріалів конференції' : 'electronic conference proceedings');
+    setText('keyDatesEyebrow', t.keyDatesEyebrow);
+    setText('howEyebrow', t.howEyebrow);
+    setHtml('step1', t.step1); setHtml('step2', t.step2); setHtml('step3', t.step3);
+    setHtml('step4', t.step4); setHtml('step5', t.step5);
+    setText('stepsNote', t.stepsNote);
+    setText('homeInfoNote', t.homeInfoNote);
+
+    setText('aboutEyebrow', t.aboutEyebrow);
+    setText('aboutH2', t.aboutH2);
+    setText('goalsH3', t.goalsH3);
+    setText('goal1', t.goal1); setText('goal2', t.goal2); setText('goal3', t.goal3);
+    setText('orgsH3', t.orgsH3);
+    setText('orgsLede', t.orgsLede);
+    setText('committeeH3', t.committeeH3);
+    setText('langH3', t.langH3);
+    setText('badgeUk', t.badgeUk);
+    setText('topicsH3', t.topicsH3);
+    setText('topicsNote', t.topicsNote);
+
+    setText('registerEyebrow', t.registerEyebrow);
+    setText('registerH2', t.registerH2);
+    setText('registerLede', t.registerLede);
+    setText('registerSeparateNote', t.registerSeparateNote);
+    setText('regConfigNoticeText', t.regConfigNoticeText);
+    setText('regBlock1Legend', t.regBlock1Legend);
+    setText('regFullNameLabel', t.regFullNameLabel);
+    setText('regEmailLabel', t.regEmailLabel); setText('regPhoneLabel', t.regPhoneLabel);
+    setText('regBlock2Legend', t.regBlock2Legend);
+    setText('regCountryLabel', t.regCountryLabel); setText('regInstitutionLabel', t.regInstitutionLabel); setText('regDegreePositionLabel', t.regDegreePositionLabel);
+    setText('regBlock3Legend', t.regBlock3Legend);
+    setText('regParticipationFormatLabel', t.regParticipationFormatLabel); setText('regManuscriptLabel', t.regManuscriptLabel);
+    setText('regTrackLabel', t.regTrackLabel); setText('regInviteLabel', t.regInviteLabel);
+    setText('regBlock4Legend', t.regBlock4Legend);
+    setText('regCommentsLabel', t.regCommentsLabel);
+    setText('regBlock5Legend', t.regBlock5Legend);
+    setText('regConsentLabel', t.regConsentLabel);
+    setText('regSubmitBtn', t.regSubmitBtn);
+    setText('regThankYouTitle', t.regThankYouTitle);
+    setText('regThankYouText', t.regThankYouText);
+    setText('regThankYouCta', t.regThankYouCta);
+    setText('registerPanelTitle', t.registerPanelTitle);
+    setText('regWhoTitle', t.regWhoTitle);
+
+    setText('submitEyebrow', t.submitEyebrow);
+    setText('submitH2', t.submitH2);
+    setHtml('submitLede', t.submitLede);
+    setText('submitSeparateNote', t.submitSeparateNote);
+    setText('checklistLegend', t.checklistLegend);
+    setText('submitFormEyebrow', t.submitFormEyebrow);
+    setText('reqPanelTitle', t.reqPanelTitle);
+    setText('submitWarnNote', t.submitWarnNote);
+
+    setText('statusEyebrow', t.statusEyebrow);
+    setText('statusH2', t.statusH2);
+    setText('statusLede', t.statusLede);
+    setHtml('statusGoal1', t.statusGoal1); setHtml('statusGoal2', t.statusGoal2);
+    setHtml('statusGoal3', t.statusGoal3); setHtml('statusGoal4', t.statusGoal4);
+    setText('statusInfoNote1', t.statusInfoNote1);
+    setText('statusFormEyebrow', t.statusFormEyebrow);
+    setHtml('statusInfoNote2', t.statusInfoNote2);
+
+    setText('contactsEyebrow', t.contactsEyebrow);
+    setText('contactsH2', t.contactsH2);
+    setText('venueEyebrow', t.venueEyebrow);
+    setText('venueName', t.venueName);
+    setText('venueDept', t.venueDept);
+    setText('venueLine', t.venueLine);
+    setHtml('contactsPanel', t.contactsPanel);
+
+    setText('footerLine1', t.footerLine1);
+    setText('footerLine2', t.footerLine2);
+
+    /* who-registers list */
+    var whoList = document.getElementById('regWhoList');
+    whoList.innerHTML = '';
+    [t.regWho1, t.regWho2, t.regWho3].forEach(function(txt){ whoList.appendChild(el('li',{},[txt])); });
+
+    /* registration deadline note (only shows a date if the organizer set one) */
+    setText('regDeadlineNoteText', REGISTRATION_DEADLINE ? t.regDeadlineSet(fmtDate(REGISTRATION_DEADLINE)) : t.regDeadlineOpen);
+
+    /* config-not-ready banner + submit button state */
+    var configured = isRegistrationConfigured();
+    document.getElementById('regConfigNotice').hidden = configured;
+    document.getElementById('regSubmitBtn').textContent = t.regSubmitBtn;
+  }
+
+  /* ---------------- RENDER: DATA-DRIVEN LISTS ---------------- */
+  function renderLetterhead(){ document.getElementById('letterheadShort').textContent = I18N[currentLang].letterhead; }
+
+  function renderOrgs(){
+    var orgFull = document.getElementById('orgListFull');
+    orgFull.innerHTML = '';
+    ORGS.forEach(function(o){ orgFull.appendChild(el('li',{},[o[currentLang]])); });
+  }
+
+  function renderCommittee(){
+    var cg = document.getElementById('committeeGrid');
+    cg.innerHTML = '';
+    COMMITTEE.forEach(function(p){
+      var d = p[currentLang];
+      cg.appendChild(el('div',{class:'person'},[
+        el('div',{class:'p-role'},[d.role]),
+        el('div',{class:'p-name'},[d.name]),
+        el('div',{class:'p-aff'},[d.aff])
+      ]));
+    });
+  }
+
+  function renderSections(){
+    var sg = document.getElementById('sectionsGrid');
+    var miniList = document.getElementById('sectionMiniList');
+    sg.innerHTML = ''; miniList.innerHTML = '';
+    var label = I18N[currentLang].sectionLabel;
+    SECTIONS.forEach(function(s){
+      var d = s[currentLang];
+      sg.appendChild(el('div',{class:'card section-card'},[
+        el('div',{class:'sc-head'},[ el('span',{class:'sc-num'},[label+' '+s.n]), el('h3',{},[d.title]) ]),
+        el('p',{},[d.text])
+      ]));
+      miniList.appendChild(el('li',{},[d.title]));
+    });
+  }
+
+  function renderContacts(){
+    var cgrid = document.getElementById('contactGrid');
+    cgrid.innerHTML = '';
+    CONTACTS.forEach(function(c){
+      var d = c[currentLang];
+      var lines = [
+        el('div',{class:'role'},[d.role]),
+        el('div',{class:'name'},[d.name]),
+        el('div',{class:'aff'},[d.aff])
+      ];
+      if(c.email) lines.push(el('div',{class:'cline'},['✉ ', el('a',{href:'mailto:'+c.email, class:'mono'},[c.email])]));
+      if(c.phone) lines.push(el('div',{class:'cline'},['☎ ', el('span',{class:'mono'},[c.phone])]));
+      cgrid.appendChild(el('div',{class:'card contact-card'}, lines));
+    });
+  }
+
+  function renderReqList(){
+    var reqList = document.getElementById('reqList');
+    reqList.innerHTML = '';
+    REQ_LIST[currentLang].forEach(function(it){ reqList.appendChild(el('li',{},[it])); });
+  }
+
+  function renderTimeline(){
+    var tl = document.getElementById('timelineList');
+    tl.innerHTML = '';
+    TL_DATA.forEach(function(item){
+      var d = item[currentLang];
+      var ref = item.refKey ? REF_DATES[item.refKey] : null;
+      var cls = '';
+      if(ref){
+        if(NOW > ref) cls = 'done';
+        else if(daysBetween(NOW, ref) <= 14) cls = 'now';
+      }
+      var countdown = '';
+      if(ref && NOW <= ref){
+        countdown = currentLang === 'uk' ? ('через ' + daysBetween(NOW, ref) + ' дн.') : ('in ' + daysBetween(NOW, ref) + ' days');
+      }
+      tl.appendChild(el('li',{class:cls},[
+        el('div',{class:'tl-date'},[d.date]),
+        el('div',{class:'tl-title'},[d.title]),
+        el('div',{class:'tl-desc'},[d.desc]),
+        countdown ? el('div',{class:'countdown'},[countdown]) : ''
+      ]));
+    });
+
+    var daysToDeadline = daysBetween(NOW, DEADLINE);
+    document.getElementById('statDeadlineDays').textContent = daysToDeadline > 0 ? daysToDeadline : '0';
+
+    var deadlineNote = document.getElementById('deadlineNote');
+    var t = I18N[currentLang];
+    if(daysToDeadline > 0){
+      deadlineNote.textContent = t.deadlineRemaining(daysToDeadline);
+      document.getElementById('deadlineIco').textContent = 'i';
+    } else {
+      deadlineNote.textContent = t.deadlinePassed;
+      document.getElementById('deadlineIco').textContent = '!';
+    }
+  }
+
+  /* ---------------- CHECKLIST (self-check, remembered per browser) ---------------- */
+  var clWrap = document.getElementById('checklistWrap');
+  var clInputs = [];
+  var clGroupHeaders = [];
+  var clItemLabels = [];
+  var clSaved = {};
+  try{ clSaved = JSON.parse(safeGet('nntiz-checklist') || '{}') || {}; }catch(e){ clSaved = {}; }
+
+  CHECKLIST.forEach(function(g, gi){
+    var group = el('div',{class:'cl-group'});
+    var h4 = el('h4',{},[g.uk.group]);
+    clGroupHeaders.push({ el:h4, data:g });
+    group.appendChild(h4);
+    g.uk.items.forEach(function(text, idx){
+      var key = gi+'_'+idx;
+      var cb = el('input',{type:'checkbox', id:'cl_'+key});
+      if(clSaved[key]) cb.checked = true;
+      clInputs.push({cb:cb, key:key});
+      var textSpan = el('span',{},[text]);
+      clItemLabels.push({ el:textSpan, data:g, idx:idx });
+      var label = el('label',{class:'cl-item', for:cb.id},[]);
+      label.appendChild(cb);
+      label.appendChild(textSpan);
+      group.appendChild(label);
+    });
+    clWrap.appendChild(group);
+  });
+  var clBar = document.getElementById('clBar');
+  var clCount = document.getElementById('clCount');
+  function updateChecklistCount(){
+    var total = clInputs.length;
+    var checked = clInputs.filter(function(c){ return c.cb.checked; }).length;
+    clBar.style.width = (total ? (checked/total*100) : 0) + '%';
+    clCount.textContent = I18N[currentLang].clCountTpl(checked, total);
+    var state = {};
+    clInputs.forEach(function(c){ if(c.cb.checked) state[c.key] = true; });
+    safeSet('nntiz-checklist', JSON.stringify(state));
+  }
+  clInputs.forEach(function(c){ c.cb.addEventListener('change', updateChecklistCount); });
+  function renderChecklistLang(){
+    clGroupHeaders.forEach(function(h){ h.el.textContent = h.data[currentLang].group; });
+    clItemLabels.forEach(function(it){ it.el.textContent = it.data[currentLang].items[it.idx]; });
+    updateChecklistCount();
+  }
+
+  /* ---------------- REGISTRATION FORM: BUILD (once) ---------------- */
+  var regRadioGroups = {}; // key -> [{input, uk, en}]
+  function buildRadioGroup(containerId, name, options, groupKey, required){
+    var wrap = document.getElementById(containerId);
+    wrap.innerHTML = '';
+    regRadioGroups[groupKey] = [];
+    options.forEach(function(opt, i){
+      var attrs = {type:'radio', name:name, value:opt.value, id:name+'_'+i};
+      // HTML5: marking ONE radio in a name-group required is enough to require the whole group
+      if(required && i === 0) attrs.required = 'required';
+      var input = el('input', attrs);
+      var label = el('label',{},[]);
+      label.appendChild(input);
+      var span = el('span',{},[opt.uk]);
+      label.appendChild(span);
+      wrap.appendChild(label);
+      regRadioGroups[groupKey].push({ input:input, span:span, opt:opt });
+    });
+  }
+  buildRadioGroup('regParticipationFormatRadios', 'reg_participationFormat', PARTICIPATION_FORMAT_OPTIONS, 'participationFormat', true);
+  buildRadioGroup('regManuscriptRadios', 'reg_manuscript', YES_NO_OPTIONS, 'manuscript', true);
+
+  var trackSelect = document.getElementById('reg_track');
+  var trackPlaceholderOpt = el('option',{value:''},[]);
+  trackPlaceholderOpt.selected = true;
+  trackPlaceholderOpt.disabled = true;
+  trackPlaceholderOpt.hidden = true;
+  trackSelect.appendChild(trackPlaceholderOpt);
+  SECTIONS.forEach(function(s){
+    var opt = el('option',{value:s.n+'. '+s.uk.title+' ('+s.en.title+')'},[]); // confirmed format: "N. UK title (EN title)"
+    trackSelect.appendChild(opt);
+  });
+
+  var inviteSelect = document.getElementById('reg_invitation');
+  var invitePlaceholderOpt = el('option',{value:''},[]);
+  invitePlaceholderOpt.selected = true;
+  invitePlaceholderOpt.disabled = true;
+  invitePlaceholderOpt.hidden = true;
+  inviteSelect.appendChild(invitePlaceholderOpt);
+  var inviteOptEls = YES_NO_OPTIONS.map(function(opt){
+    var o = el('option',{value:opt.value},[]);
+    inviteSelect.appendChild(o);
+    return { el:o, opt:opt };
+  });
+
+  function renderRegistrationOptionsLang(){
+    Object.keys(regRadioGroups).forEach(function(key){
+      regRadioGroups[key].forEach(function(row){ row.span.textContent = row.opt[currentLang]; });
+    });
+    var t = I18N[currentLang];
+    trackPlaceholderOpt.textContent = t.regTrackPlaceholder;
+    SECTIONS.forEach(function(s, i){
+      trackSelect.options[i+1].textContent = (i+1) + '. ' + s[currentLang].title;
+    });
+    invitePlaceholderOpt.textContent = t.regInvitePlaceholder;
+    inviteOptEls.forEach(function(row){ row.el.textContent = row.opt[currentLang]; });
+  }
+
+  /* wire entry.NNNN names + form action once REGISTRATION_ENTRY_IDS / REGISTRATION_FORM_URL are filled in */
+  var regForm = document.getElementById('registrationForm');
+  var regHiddenFrame = document.getElementById('regHiddenFrame');
+  var regMsgEl = document.getElementById('regMsg');
+  var regSubmitFlag = false;
+
+  function applyEntryNames(){
+    document.getElementById('reg_fullName').name = REGISTRATION_ENTRY_IDS.fullName || '';
+    document.getElementById('reg_email').name = REGISTRATION_ENTRY_IDS.email || '';
+    document.getElementById('reg_phone').name = REGISTRATION_ENTRY_IDS.phone || '';
+    document.getElementById('reg_country').name = REGISTRATION_ENTRY_IDS.country || '';
+    document.getElementById('reg_institution').name = REGISTRATION_ENTRY_IDS.institution || '';
+    document.getElementById('reg_degreePosition').name = REGISTRATION_ENTRY_IDS.degreePosition || '';
+    regRadioGroups.participationFormat.forEach(function(r){ r.input.name = REGISTRATION_ENTRY_IDS.participationFormat || 'reg_participationFormat'; });
+    regRadioGroups.manuscript.forEach(function(r){ r.input.name = REGISTRATION_ENTRY_IDS.manuscript || 'reg_manuscript'; });
+    trackSelect.name = REGISTRATION_ENTRY_IDS.track || '';
+    inviteSelect.name = REGISTRATION_ENTRY_IDS.invitation || '';
+    document.getElementById('reg_comments').name = REGISTRATION_ENTRY_IDS.comments || '';
+    var consent = document.getElementById('reg_consent');
+    consent.name = REGISTRATION_ENTRY_IDS.consent || '';
+    consent.value = '"I consent to the processing of my personal data in accordance with the Law of Ukraine \'On Personal Data Protection\' for the purposes of organizing and holding the conference." / «Даю згоду на обробку моїх особистих даних відповідно до Закону України "Про захист персональних даних" з метою організації та проведення конференції.»'; // confirmed exact checkbox option text
+    regForm.action = toFormResponseUrl(REGISTRATION_FORM_URL);
+  }
+  applyEntryNames();
+
+  function showRegMsg(kind, text){
+    regMsgEl.className = 'msg show ' + kind;
+    regMsgEl.textContent = text;
+  }
+  function hideRegMsg(){ regMsgEl.className = 'msg'; regMsgEl.textContent = ''; }
+
+  var regThankYou = document.getElementById('regThankYou');
+  function showRegThankYou(){
+    regForm.hidden = true;
+    regThankYou.hidden = false;
+    regThankYou.scrollIntoView({ block:'start', behavior:'smooth' });
+  }
+
+  /* the browser's native constraint validation (required / type=email / pattern) blocks the
+     'submit' event and shows its own accessible error bubbles before this handler ever runs —
+     so by the time we get here, every required field is present and correctly formatted. */
+  regForm.addEventListener('submit', function(e){
+    hideRegMsg();
+    if(!isRegistrationConfigured()){
+      e.preventDefault();
+      showRegMsg('err', I18N[currentLang].regNotConfigured);
+      return;
+    }
+    regSubmitFlag = true;
+  });
+
+  regHiddenFrame.addEventListener('load', function(){
+    if(regSubmitFlag){
+      regSubmitFlag = false;
+      showRegThankYou();
+    }
+  });
+
+  /* ---------------- GOOGLE FORM EMBEDS: manuscript submission / revision ---------------- */
+  var embedDefs = [
+    { containerId:'gform-manuscript', url:SUBMIT_FORM_URL, placeholderKey:'embedPlaceholderManuscript', varName:'SUBMIT_FORM_URL', height:'900' },
+    { containerId:'gform-revision', url:REVISION_FORM_URL, placeholderKey:'embedPlaceholderRevision', varName:'REVISION_FORM_URL', height:'760' }
+  ];
+  var embedLinkEls = {};  // containerId -> <a> (when a URL is configured)
+  var embedEmptyEls = {}; // containerId -> {msgEl, noteEl, def} (when not configured)
+  function buildEmbeds(){
+    embedDefs.forEach(function(def){
+      var host = document.getElementById(def.containerId);
+      if(!host) return;
+      host.innerHTML = '';
+      if(!def.url){
+        var msgEl = el('div',{class:'es-msg'},['']);
+        var noteEl = el('div',{class:'mono es-note'},['']);
+        host.appendChild(el('div',{class:'empty-state'},[msgEl, noteEl]));
+        embedEmptyEls[def.containerId] = { msgEl:msgEl, noteEl:noteEl, def:def };
+        return;
+      }
+      host.appendChild(el('iframe',{
+        class:'gform-frame', src:toEmbedUrl(def.url), height:def.height,
+        loading:'lazy', title:def.containerId
+      },[]));
+      var link = el('a',{class:'btn btn-ghost btn-sm', href:def.url, target:'_blank', rel:'noopener', style:'margin-top:12px;'},['']);
+      host.appendChild(link);
+      embedLinkEls[def.containerId] = link;
+    });
+  }
+  function renderEmbedsLang(){
+    var t = I18N[currentLang];
+    Object.keys(embedLinkEls).forEach(function(id){ embedLinkEls[id].textContent = t.embedOpenLink; });
+    Object.keys(embedEmptyEls).forEach(function(id){
+      var rec = embedEmptyEls[id];
+      rec.msgEl.textContent = t[rec.def.placeholderKey] || '';
+      rec.noteEl.textContent = t.embedVarNote(rec.def.varName);
+    });
+  }
+  buildEmbeds();
+
+  /* ---------------- LANGUAGE SWITCH ---------------- */
+  var langBtnEl = document.getElementById('langToggle');
+  function applyLang(lang){
+    currentLang = (lang === 'en') ? 'en' : 'uk';
+    safeSet('nntiz-lang', currentLang);
+    renderStaticText();
+    renderLetterhead();
+    renderOrgs();
+    renderCommittee();
+    renderSections();
+    renderContacts();
+    renderReqList();
+    renderTimeline();
+    renderChecklistLang();
+    renderRegistrationOptionsLang();
+    renderEmbedsLang();
+  }
+  langBtnEl.addEventListener('click', function(){
+    applyLang(currentLang === 'uk' ? 'en' : 'uk');
+  });
+
+  /* ---------------- INIT ---------------- */
+  applyLang(LANG_DEFAULT);
+
+})();
+</script>
