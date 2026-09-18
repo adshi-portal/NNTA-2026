@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<noscript><style>body{visibility:visible!important;}</style></noscript>
 <style>
   /* ============ TOKENS ============ */
   :root{
@@ -67,7 +68,9 @@
     margin:0; background:var(--bg); color:var(--ink);
     font-family:var(--font-body); font-size:16px; line-height:1.55;
     -webkit-font-smoothing:antialiased;
+    visibility:hidden; /* revealed by JS once all i18n text is filled in — avoids a flash of empty/unlabeled content */
   }
+  body.ready{visibility:visible;}
   img{max-width:100%;}
   h1,h2,h3,h4{font-family:var(--font-display); font-weight:600; margin:0 0 .4em; text-wrap:balance; color:var(--ink);}
   p{margin:0 0 1em;}
@@ -1647,6 +1650,7 @@
 
   /* ---------------- INIT ---------------- */
   applyLang(LANG_DEFAULT);
+  document.body.classList.add('ready'); // reveal the page only once all text is in place
 
 })();
 </script>
